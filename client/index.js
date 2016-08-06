@@ -1,16 +1,15 @@
 // get audio/video
 var enableVideo = function () {
   navigator.getUserMedia({audio:true, video: true}, function (stream) {
-  console.log("Connecting media to stream");
-  //display video
-  var video = document.getElementById("myVideo");
-  video.src = URL.createObjectURL(stream);
-  window.localStream = stream;
-}, function (error) { console.log(error); }
-);
+    console.log("Connecting media to stream");
+    //display video
+    var video = document.getElementById("myVideo");
+    video.src = URL.createObjectURL(stream);
+    window.localStream = stream;
+  }, function (error) { console.log(error); }
+  );
 }
 
-if (Meteor.isClient) {
   Template.hello.events({
     "click #makeCall": function () {
       var user = this;
@@ -100,13 +99,3 @@ if (Meteor.isClient) {
 
   });
 
-}
-
-if (Meteor.isServer) {
-  Meteor.publish('presences', function() {
-    return Presences.find({}, { userId: true });
-  });
-  Meteor.publish("users", function () {
-    return Meteor.users.find({}, {fields: {"profile.peerId": true, "emails.address": true} });
-  });
-}

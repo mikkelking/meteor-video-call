@@ -3,21 +3,30 @@
 </head>
 
 <body>
-{{> loginButtons}} Your id: <span id="myPeerId">...</span> {{#if currentUser}} {{> hello}} {{/if}} 
+{{> loginButtons}}  
+{{#if currentUser}} 
+  {{> hello}} 
+{{else}} 
+<P>Please sign in to make a video call</P>
+{{/if}} 
 </body>
 
 <template name="hello">
-  <h2>Video Chat, </h2>
+
+  <h2>Video Chat <span id="myPeerId">...</span></h2>
   <div id="video-container">
     <!-- note the 'autoplay' -->
-      <video id="theirVideo" class="theirVideo" autoplay></video>
+    <video id="theirVideo" class="theirVideo" controls autoplay></video>
 
     <video id="myVideo" muted="true" class="myVideo" autoplay></video>
   </div>
+
+<!-- Display a list of users that we can call   -->
   <div>
     <br> {{#each users}}
     <p><a href="#" id="makeCall">Call {{#each emails}}{{address}}{{/each}}</a></p> 
     {{/each}}
     <p><a href="#" id="endCall">End Call</a></p>
   </div>
+
 </template>
