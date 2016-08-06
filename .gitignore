@@ -1,0 +1,8 @@
+# Created by .ignore support plugin 
+### Meteor template
+.meteor/local
+.meteor/meteorite
+
+.idea
+.DS_Store
+node_modules

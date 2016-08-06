@@ -1,0 +1,23 @@
+<head>
+  <title>Video call/chat</title>
+</head>
+
+<body>
+{{> loginButtons}} Your id: <span id="myPeerId">...</span> {{#if currentUser}} {{> hello}} {{/if}} 
+</body>
+
+<template name="hello">
+  <h2>Video Chat, </h2>
+  <div id="video-container">
+    <!-- note the 'autoplay' -->
+      <video id="theirVideo" class="theirVideo" autoplay></video>
+
+    <video id="myVideo" muted="true" class="myVideo" autoplay></video>
+  </div>
+  <div>
+    <br> {{#each users}}
+    <p><a href="#" id="makeCall">Call {{#each emails}}{{address}}{{/each}}</a></p> 
+    {{/each}}
+    <p><a href="#" id="endCall">End Call</a></p>
+  </div>
+</template>

@@ -1,0 +1,16 @@
+.videoBox{
+	border: 4px;
+	border-color: #cccccc;
+}
+.myVideo{
+	width: 160px;
+}
+.theirVideo{
+	width: 320px;
+	border: 1px;
+
+}
+#video-container{
+	background-color: #eeeeee;
+	padding: 5px;
+}
