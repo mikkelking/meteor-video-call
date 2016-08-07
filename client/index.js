@@ -1,43 +1,72 @@
-// get audio/video
-var enableVideo = function () {
-  navigator.getUserMedia({audio:true, video: true}, function (stream) {
-    console.log("Connecting media to stream");
-    //display video
-    var video = document.getElementById("myVideo");
-    video.src = URL.createObjectURL(stream);
-    window.localStream = stream;
-  }, function (error) { console.log(error); }
-  );
-}
+import angular from 'angular';
+import angularMeteor from 'angular-meteor';
+import { Accounts } from 'meteor/accounts-base';
 
-  Template.hello.events({
-    "click #makeCall": function () {
-      var user = this;
+var app = angular.module("videoCall", 
+  ["angular-meteor"
+  ,"accounts.ui"
+  ]);
+
+app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "$reactive",
+  function ($scope, $location, $rootScope, $timeout, $reactive) {
+
+    $reactive(this).attach($scope);
+    this.subscribe('users', () => []);
+    this.subscribe('presences', () => []);
+    $scope.userId = this.userId;
+    $scope.Accounts = Accounts;
+//    $scope.uid = Meteor.user();
+    
+    $scope.helpers({
+      isLoggedIn: function() {
+        return !!Meteor.userId();
+      },
+      uid: function(){
+        return this.userId;
+      },
+      currentUser: function() {
+        return Meteor.user();
+      },
+      presences: function () {
+        return Presences.find();
+      },
+      users: function () {
+        // exclude the currentUser
+        var userIds = Presences.find().map(function(presence) {return presence.userId;});
+        return Meteor.users.find({_id: {$in: userIds, $ne: Meteor.userId()}});
+      }
+    });
+
+
+    // get audio/video
+    var enableVideo = function () {
+      navigator.getUserMedia({audio:true, video: true}, function (stream) {
+        console.log("Connecting media to stream");
+        //display video
+        var video = document.getElementById("myVideo");
+        video.src = URL.createObjectURL(stream);
+        window.localStream = stream;
+      }, function (error) { console.log(error); }
+      );
+    }
+
+    $scope.makeCall = function (id,who) {
+      console.log("Starting call to "+who+" ("+id+")");
+//      var user = Meteor.users.find({"profile.peerid": id});
       enableVideo();
-      var outgoingCall = peer.call(user.profile.peerId, window.localStream);
+      var outgoingCall = peer.call(id, window.localStream);
       window.currentCall = outgoingCall;
       outgoingCall.on('stream', function (remoteStream) {
         window.remoteStream = remoteStream;
         var video = document.getElementById("theirVideo")
         video.src = URL.createObjectURL(remoteStream);
       });
-    },
-    "click #endCall": function () {
+    };
+
+    $scope.endCall = function () {
+      console.log("Ending call");
       window.currentCall.close();
-    }
-  });
-
-  Template.hello.helpers({
-    users: function () {
-      // exclude the currentUser
-      var userIds = Presences.find().map(function(presence) {return presence.userId;});
-      return Meteor.users.find({_id: {$in: userIds, $ne: Meteor.userId()}});
-    }
-  });
-
-  Template.hello.onCreated(function () {
-    Meteor.subscribe("presences");
-    Meteor.subscribe("users");
+    };
 
     console.log("Setting up own presence");
     window.peer = new Peer({
@@ -96,6 +125,7 @@ var enableVideo = function () {
                       navigator.mozGetUserMedia ||
                       navigator.msGetUserMedia );
 
+  }
+]);
 
-  });
 

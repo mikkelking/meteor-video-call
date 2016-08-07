@@ -2,31 +2,33 @@
   <title>Video call/chat</title>
 </head>
 
-<body>
-{{> loginButtons}}  
-{{#if currentUser}} 
-  {{> hello}} 
-{{else}} 
-<P>Please sign in to make a video call</P>
-{{/if}} 
+<body ng-app="videoCall" ng-cloak>
+  <div ng-controller="videoCtrl"> 
+  {{uid}} HELLO 
+    <login-buttons></login-buttons>
+    <div ng-if="isLoggedIn"> 
+      <h2>Video Chat <span id="myPeerId">...</span></h2>
+      <div id="video-container">
+        <!-- note the 'autoplay' -->
+        <video id="theirVideo" class="theirVideo" controls autoplay></video>
+
+        <video id="myVideo" muted="true" class="myVideo" autoplay></video>
+      </div>
+
+    <!-- Display a list of users that we can call   -->
+      <div>
+        <br> 
+        <p ng-repeat="u in users"><a href="#" ng-click="makeCall
+        (u.profile.peerId,u.emails[0].address)">
+          Call {{u.emails[0].address}}</a>
+        </p> 
+        
+        <p><a href="#" ng-click="endCall()">End Call</a></p>
+      </div>
+    </div>
+
+    <div ng-if="!isLoggedIn"> 
+    <P>Please sign in to make a video call</P>
+    </div>
+  </div>
 </body>
-
-<template name="hello">
-
-  <h2>Video Chat <span id="myPeerId">...</span></h2>
-  <div id="video-container">
-    <!-- note the 'autoplay' -->
-    <video id="theirVideo" class="theirVideo" controls autoplay></video>
-
-    <video id="myVideo" muted="true" class="myVideo" autoplay></video>
-  </div>
-
-<!-- Display a list of users that we can call   -->
-  <div>
-    <br> {{#each users}}
-    <p><a href="#" id="makeCall">Call {{#each emails}}{{address}}{{/each}}</a></p> 
-    {{/each}}
-    <p><a href="#" id="endCall">End Call</a></p>
-  </div>
-
-</template>
