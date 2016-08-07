@@ -39,21 +39,28 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
 
 
     // get audio/video
-    var enableVideo = function () {
+    var enableVideo = function (cb,id) {
       navigator.getUserMedia({audio:true, video: true}, function (stream) {
         console.log("Connecting media to stream");
         //display video
         var video = document.getElementById("myVideo");
         video.src = URL.createObjectURL(stream);
         window.localStream = stream;
+        cb(id); 
       }, function (error) { console.log(error); }
       );
     }
 
-    $scope.makeCall = function (id,who) {
-      console.log("Starting call to "+who+" ("+id+")");
-//      var user = Meteor.users.find({"profile.peerid": id});
-      enableVideo();
+// This method cleans out the video divs by removing the source and then doing a load()
+// Without the load(), the streaming would keep happening
+// TODO: Have an image come up when the video is inactive
+    var cleanVid = function(id){
+      var vid = document.getElementById(id);
+      vid.removeAttribute("src");
+      vid.load();
+    }
+
+    var connectCall = function(id){
       var outgoingCall = peer.call(id, window.localStream);
       window.currentCall = outgoingCall;
       outgoingCall.on('stream', function (remoteStream) {
@@ -63,9 +70,25 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
       });
     };
 
+    $scope.makeCall = function (id,who) {
+      console.log("Starting call to "+who+" ("+id+")");
+//      var user = Meteor.users.find({"profile.peerid": id});
+      enableVideo(connectCall,id);
+    };
+
     $scope.endCall = function () {
       console.log("Ending call");
-      window.currentCall.close();
+      cleanVid("myVideo");
+      cleanVid("theirVideo");
+      if (window.currentCall)
+        window.currentCall.close();
+      if (window.localStream) {
+        var tracks = window.localStream.getTracks();
+        _.each(tracks,function(track){
+          window.localStream.removeTrack(track);
+        });
+        delete window.localStream;
+      }
     };
 
     console.log("Setting up own presence");

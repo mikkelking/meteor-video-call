@@ -20,7 +20,7 @@
         <br> 
         <p ng-repeat="u in users"><a href="#" ng-click="makeCall
         (u.profile.peerId,u.emails[0].address)">
-          Call {{u.emails[0].address}}</a>
+          Call {{u.emails[0].address}}</a> ({{u.profile.peerId}})
         </p> 
         
         <p><a href="#" ng-click="endCall()">End Call</a></p>
