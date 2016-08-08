@@ -3,16 +3,35 @@
 </head>
 
 <body ng-app="videoCall" ng-cloak>
-  <div ng-controller="videoCtrl"> 
-  {{uid}} HELLO 
+  <div ng-controller="videoCtrl as $ctrl"> 
     <login-buttons></login-buttons>
+<!--     <div class="videogular-container">
+    <videogular vg-theme="$ctrl.config.theme">
+      <vg-media vg-src="$ctrl.config.sources"
+          vg-tracks="$ctrl.config.tracks">
+      </vg-media>
+      <vg-controls>
+        <vg-play-pause-button></vg-play-pause-button>
+        <vg-time-display>Call duration: {{ currentTime | date:'mm:ss' }}</vg-time-display>
+        <vg-volume>
+          <vg-mute-button></vg-mute-button>
+          <vg-volume-bar></vg-volume-bar>
+        </vg-volume>
+        <vg-fullscreen-button></vg-fullscreen-button>
+      </vg-controls>
+ 
+      <vg-poster vg-url='$ctrl.config.plugins.poster'></vg-poster>
+    </videogular>
+    </div>
+ -->
     <div ng-if="isLoggedIn"> 
       <h2>Video Chat <span id="myPeerId">...</span></h2>
       <div id="video-container">
         <!-- note the 'autoplay' -->
-        <video id="theirVideo" class="theirVideo" controls autoplay></video>
+        <video id="theirVideo" class="theirVideo video-js vjs-default-skin" controls autoplay vjs-big-play-centered poster="/images/amba.jpg"></video>
 
-        <video id="myVideo" muted="true" class="myVideo" autoplay></video>
+        <video id="myVideo" muted="true" class="myVideo" 
+          poster="/images/mugshot.jpg" autoplay ></video>
       </div>
 
     <!-- Display a list of users that we can call   -->

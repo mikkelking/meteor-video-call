@@ -1,16 +1,51 @@
 import angular from 'angular';
 import angularMeteor from 'angular-meteor';
 import { Accounts } from 'meteor/accounts-base';
+import 'angular-sanitize';
+// import "videogular";
+// import "videogular-controls";
+// import "videogular-poster";
+// Used a package for Meteor
+//require ("video-js");
+// import "vjs-video";
+
 
 var app = angular.module("videoCall", 
   ["angular-meteor"
   ,"accounts.ui"
+  ,"ngSanitize"
+  // ,"com.2fdevs.videogular",
+  // ,"com.2fdevs.videogular.plugins.controls"
+  // ,"com.2fdevs.videogular.plugins.poster"  
+//  ,"videojs"
+  // ,"vjs.video"
   ]);
 
-app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "$reactive",
-  function ($scope, $location, $rootScope, $timeout, $reactive) {
+app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "$reactive", "$sce",
+  function ($scope, $location, $rootScope, $timeout, $reactive, $sce) {
 
     $reactive(this).attach($scope);
+// Setup for Videogular player (doesn't look like it streams)
+    this.config = {
+      sources: [
+        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.mp4"), type: "video/mp4"},
+        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.webm"), type: "video/webm"},
+        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.ogg"), type: "video/ogg"}
+      ],
+      tracks: [
+        {
+          src: "http://www.videogular.com/assets/subs/pale-blue-dot.vtt",
+          kind: "subtitles",
+          srclang: "en",
+          label: "English",
+          default: ""
+        }
+      ],
+//      theme: "bower_components/videogular-themes-default/videogular.css",
+      plugins: {
+        poster: "http://www.videogular.com/assets/images/videogular.png"
+      }
+    };
     this.subscribe('users', () => []);
     this.subscribe('presences', () => []);
     $scope.userId = this.userId;
@@ -40,13 +75,16 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
 
     // get audio/video
     var enableVideo = function (cb,id) {
+		console.log("Getting user media");
       navigator.getUserMedia({audio:true, video: true}, function (stream) {
         console.log("Connecting media to stream");
         //display video
         var video = document.getElementById("myVideo");
         video.src = URL.createObjectURL(stream);
         window.localStream = stream;
-        cb(id); 
+		if (id && cb) {	// Do we need to do a callback?
+			cb(id); 
+			}
       }, function (error) { console.log(error); }
       );
     }
@@ -131,8 +169,9 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
 
     // This event: remote peer receives a call
     peer.on('call', function (incomingCall) {
-      console.log("Making a call");
+      console.log("Receiving a call");
       window.currentCall = incomingCall;
+	  enableVideo();
       incomingCall.answer(window.localStream);
       incomingCall.on('stream', function (remoteStream) {
         window.remoteStream = remoteStream;
