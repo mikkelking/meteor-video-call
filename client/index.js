@@ -130,7 +130,7 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
     };
 
     console.log("Setting up own presence");
-    window.peer = new Peer({
+    var peer = new Peer({
       key: '3hlis32874fe0zfr',  // change this key
       debug: 3,
       config: {'iceServers': [
@@ -141,13 +141,16 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
 
     // This event: remote peer receives a call
     peer.on('open', function () {
-      console.log("Connected to PeerJS Server");
+      console.log("Connected to PeerJS Server, my id is "+peer.id);
       $('#myPeerId').text(peer.id);
       // update the current user's profile
       Meteor.users.update({_id: Meteor.userId()}, {
         $set: {
           profile: { peerId: peer.id}
         }
+      });
+      peer.on('error', function (err) {
+        console.error("Error from remote: "+err);
       });
     });
 
