@@ -1,5 +1,4 @@
-# A Basic WebRTC tutorial using Meteor.js and PeerJS
+# A Finite state machine evolution
 
-See the blog post:
+A Mashup of a diagramming tool from Madebyevan.com and node module machina.
 
-http://www.mhurwi.com/a-basic-webrtc-tutorial-using-meteor-peerjs/.
