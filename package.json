@@ -20,6 +20,7 @@
     "js-binarypack": "0.0.9",
     "ng-sanitize": "0.0.2",
     "reliable": "^1.0.0",
+    "stanza.io": "^8.0.1",
     "video.js": "^5.10.7",
     "videogular": "^1.4.4",
     "videogular-controls": "^1.4.4",
