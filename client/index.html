@@ -2,7 +2,7 @@
   <title>Video call/chat</title>
 </head>
 
-<body ng-app="videoCall" ng-cloak>
+<body ng-app="videoCall">
   <div ng-controller="videoCtrl as $ctrl"> 
     <login-buttons></login-buttons>
 <!--     <div class="videogular-container">
@@ -26,6 +26,10 @@
  -->
     <div ng-if="isLoggedIn"> 
       <h2>Video Chat, my peer id is {{currentUser.profile.peerId}}</h2>
+<!--       <span ng-show="error">
+ -->        <div style="color: red">{{error}}</div>
+        <button ng-click="openPeerJS()"></button>
+      <!-- </span> -->
       <div id="video-container">
         <!-- note the 'autoplay' -->
         <video id="theirVideo" class="theirVideo video-js vjs-default-skin" controls autoplay vjs-big-play-centered poster="/images/amba.jpg"></video>

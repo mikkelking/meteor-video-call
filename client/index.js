@@ -25,31 +25,8 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
   function ($scope, $location, $rootScope, $timeout, $reactive, $sce) {
 
     $reactive(this).attach($scope);
-// Setup for Videogular player (doesn't look like it streams)
-    this.config = {
-      sources: [
-        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.mp4"), type: "video/mp4"},
-        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.webm"), type: "video/webm"},
-        {src: $sce.trustAsResourceUrl("http://static.videogular.com/assets/videos/videogular.ogg"), type: "video/ogg"}
-      ],
-      tracks: [
-        {
-          src: "http://www.videogular.com/assets/subs/pale-blue-dot.vtt",
-          kind: "subtitles",
-          srclang: "en",
-          label: "English",
-          default: ""
-        }
-      ],
-//      theme: "bower_components/videogular-themes-default/videogular.css",
-      plugins: {
-        poster: "http://www.videogular.com/assets/images/videogular.png"
-      }
-    };
     this.subscribe('users', () => []);
     this.subscribe('presences', () => []);
-    $scope.userId = this.userId;
-    $scope.Accounts = Accounts;
     
     $scope.helpers({
       isLoggedIn: function() {
@@ -64,7 +41,7 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
       users: function () {
         // exclude the currentUser
         var userIds = Presences.find().map(function(presence) {return presence.userId;});
-        return Meteor.users.find({_id: {$in: userIds, $ne: Meteor.userId()}});
+        return Meteor.users.find({_id: {$in: userIds,  $ne: Meteor.userId()}});
       }
     });
 
@@ -124,59 +101,67 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
       }
     };
 
-    console.log("Setting up own presence");
-    var peer = new Peer({
-      key: '3hlis32874fe0zfr',  // change this key
-      debug: 3,
-      config: {'iceServers': [
-        { url: 'stun:stun.l.google.com:19302' },
-        { url: 'stun:stun1.l.google.com:19302' },
-      ]}
-    });
-
-    // This event: remote peer receives a call
-    peer.on('open', function () {
-      console.log("Connected to PeerJS Server, my id is "+peer.id);
-      $('#myPeerId').text(peer.id);
-      // update the current user's profile
-      Meteor.users.update({_id: Meteor.userId()}, {
-        $set: {
-          profile: { peerId: peer.id}
-        }
+    var peer;
+    $scope.openPeerJS = function() {
+      console.log("Setting up own presence");
+      peer = new Peer({
+        key: '3hlis32874fe0zfr',  // change this key
+        debug: 3,
+        config: {'iceServers': [
+          { url: 'stun:stun.l.google.com:19302' },
+          { url: 'stun:stun1.l.google.com:19302' },
+        ]}
       });
-      peer.on('error', function (err) {
-        console.error("Error from remote: "+err);
-      });
-    });
 
-    peer.on('connection', function () {
-      console.log("Connection from remote");
-    });
+      if (!peer) {
+        $scope.error = "Failed to set up peerJS";
+      } else {
+        // This event: remote peer receives a call
+        peer.on('open', function () {
+          console.log("Connected to PeerJS Server, my id is "+peer.id);
+          $('#myPeerId').text(peer.id);
+          // update the current user's profile
+          Meteor.users.update({_id: Meteor.userId()}, {
+            $set: {
+              profile: { peerId: peer.id}
+            }
+          });
+          peer.on('error', function (err) {
+            console.error("Error from remote: "+err);
+          });
+        });
 
-    peer.on('close', function () {
-      console.log("close - peer destroyed");
-    });
+        peer.on('connection', function () {
+          console.log("Connection from remote");
+        });
 
-    peer.on('disconnected', function () {
-      console.log("disconnected from remote");
-    });
+        peer.on('close', function () {
+          console.log("close - peer destroyed");
+        });
 
-    peer.on('error', function (err) {
-      console.log("Error from remote: "+err);
-    });
+        peer.on('disconnected', function () {
+          console.log("disconnected from remote");
+        });
 
-    // This event: remote peer receives a call
-    peer.on('call', function (incomingCall) {
-      console.log("Receiving a call");
-      window.currentCall = incomingCall;
-	  enableVideo();
-      incomingCall.answer(window.localStream);
-      incomingCall.on('stream', function (remoteStream) {
-        window.remoteStream = remoteStream;
-        var video = document.getElementById("theirVideo")
-        video.src = URL.createObjectURL(remoteStream);
-      });
-    });
+        peer.on('error', function (err) {
+          console.log("Error from remote: "+err);
+        });
+
+        // This event: remote peer receives a call
+        peer.on('call', function (incomingCall) {
+          console.log("Receiving a call");
+          window.currentCall = incomingCall;
+        enableVideo();
+          incomingCall.answer(window.localStream);
+          incomingCall.on('stream', function (remoteStream) {
+            window.remoteStream = remoteStream;
+            var video = document.getElementById("theirVideo")
+            video.src = URL.createObjectURL(remoteStream);
+          });
+        });
+      }
+    };
+
 
     console.log("Setting up user media");
 
