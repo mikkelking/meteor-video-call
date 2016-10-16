@@ -27,5 +27,11 @@ meteor
 
 At this stage you need to refresh both pages to update the id's, and you will get a page like this:
 
+<img src="https://github.com/mikkelking/meteor-video-call/blob/develop/public/images/logged-in.png">
+
+Click the call xxx to start a call
+
+<img src="https://github.com/mikkelking/meteor-video-call/blob/develop/public/images/in-call.png">
+
 
 
