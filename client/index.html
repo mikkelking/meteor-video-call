@@ -25,7 +25,7 @@
     </div>
  -->
     <div ng-if="isLoggedIn"> 
-      <h2>Video Chat <span id="myPeerId">...</span></h2>
+      <h2>Video Chat, my peer id is {{currentUser.profile.peerId}}</h2>
       <div id="video-container">
         <!-- note the 'autoplay' -->
         <video id="theirVideo" class="theirVideo video-js vjs-default-skin" controls autoplay vjs-big-play-centered poster="/images/amba.jpg"></video>

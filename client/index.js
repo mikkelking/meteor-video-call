@@ -50,14 +50,10 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
     this.subscribe('presences', () => []);
     $scope.userId = this.userId;
     $scope.Accounts = Accounts;
-//    $scope.uid = Meteor.user();
     
     $scope.helpers({
       isLoggedIn: function() {
         return !!Meteor.userId();
-      },
-      uid: function(){
-        return this.userId;
       },
       currentUser: function() {
         return Meteor.user();
@@ -110,7 +106,6 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
 
     $scope.makeCall = function (id,who) {
       console.log("Starting call to "+who+" ("+id+")");
-//      var user = Meteor.users.find({"profile.peerid": id});
       enableVideo(connectCall,id);
     };
 
