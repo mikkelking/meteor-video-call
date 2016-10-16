@@ -25,5 +25,7 @@ meteor
   1. goto http://localhost:3000/
   1. Create a different user
 
-At this stage
+At this stage you need to refresh both pages to update the id's, and you will get a page like this:
+
+
 
