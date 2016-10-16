@@ -72,7 +72,7 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
     }
 
     var connectCall = function(id){
-      var outgoingCall = peer.call(id, window.localStream);
+      var outgoingCall = $scope.peer.call(id, window.localStream);
       window.currentCall = outgoingCall;
       outgoingCall.on('stream', function (remoteStream) {
         window.remoteStream = remoteStream;
@@ -101,10 +101,14 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
       }
     };
 
-    var peer;
+
     $scope.openPeerJS = function() {
+      if ($scope.peer) {
+        $scope.peer.destroy();
+        $scope.peer = null;
+      }
       console.log("Setting up own presence");
-      peer = new Peer({
+      $scope.peer = new Peer({
         key: '3hlis32874fe0zfr',  // change this key
         debug: 3,
         config: {'iceServers': [
@@ -113,42 +117,42 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
         ]}
       });
 
-      if (!peer) {
+      if (!$scope.peer) {
         $scope.error = "Failed to set up peerJS";
       } else {
         // This event: remote peer receives a call
-        peer.on('open', function () {
-          console.log("Connected to PeerJS Server, my id is "+peer.id);
-          $('#myPeerId').text(peer.id);
+        $scope.peer.on('open', function () {
+          console.log("Connected to PeerJS Server, my id is "+$scope.peer.id);
+          $('#myPeerId').text($scope.peer.id);
           // update the current user's profile
           Meteor.users.update({_id: Meteor.userId()}, {
             $set: {
-              profile: { peerId: peer.id}
+              profile: { peerId: $scope.peer.id}
             }
           });
-          peer.on('error', function (err) {
+          $scope.peer.on('error', function (err) {
             console.error("Error from remote: "+err);
           });
         });
 
-        peer.on('connection', function () {
+        $scope.peer.on('connection', function () {
           console.log("Connection from remote");
         });
 
-        peer.on('close', function () {
+        $scope.peer.on('close', function () {
           console.log("close - peer destroyed");
         });
 
-        peer.on('disconnected', function () {
+        $scope.peer.on('disconnected', function () {
           console.log("disconnected from remote");
         });
 
-        peer.on('error', function (err) {
+        $scope.peer.on('error', function (err) {
           console.log("Error from remote: "+err);
         });
 
         // This event: remote peer receives a call
-        peer.on('call', function (incomingCall) {
+        $scope.peer.on('call', function (incomingCall) {
           console.log("Receiving a call");
           window.currentCall = incomingCall;
         enableVideo();
@@ -162,6 +166,7 @@ app.controller('videoCtrl', ["$scope", "$location", "$rootScope" , "$timeout", "
       }
     };
 
+    $scope.openPeerJS();
 
     console.log("Setting up user media");
 
