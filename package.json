@@ -4,7 +4,11 @@
   "description": "Video call demo",
   "main": "meteor run",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "meteor run",
+    "refdata": "node imports/scripts/mk.refdata.js",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "repository": {
     "type": "git",
@@ -14,17 +18,35 @@
   "license": "MIT",
   "homepage": "https://bitbucket.org/morkelking/videocall#readme",
   "dependencies": {
-    "angular": "^1.5.8",
-    "angular-meteor": "^1.3.11",
-    "eventemitter3": "^1.2.0",
-    "js-binarypack": "0.0.9",
-    "ng-sanitize": "0.0.2",
-    "reliable": "^1.0.0",
-    "video.js": "^5.10.7",
-    "videogular": "^1.4.4",
-    "videogular-controls": "^1.4.4",
-    "videogular-poster": "^1.4.4",
-    "videogular-themes-default": "^1.4.4",
+    "babel-runtime": "^6.23.0",
+    "bcrypt": "^1.0.3",
+    "core-js": "^2.4.1",
+    "debug": "^3.0.1",
+    "excel-as-json": "^2.0.1",
+    "faker": "^4.1.0",
+    "jsonfile": "^3.0.1",
+    "lodash": "^4.17.4",
+    "meteor-node-stubs": "~0.2.4",
+    "path": "^0.12.7",
+    "prop-types": "^15.5.10",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-radio-group": "^3.0.2",
+    "react-router-dom": "^4.1.1",
+    "simpl-schema": "^0.3.2",
+    "tracker-component": "^1.3.21",
+    "util": "^0.10.3",
     "vjs-video": "^0.1.6"
+  },
+  "devDependencies": {
+    "@storybook/react": "^3.2.12",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-1": "^6.24.1",
+    "babel-root-slash-import": "^1.1.0",
+    "chai": "^4.1.2",
+    "mocha": "^4.0.1",
+    "redux-devtools": "^3.4.0"
   }
 }

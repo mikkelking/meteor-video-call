@@ -1,57 +1,9 @@
+
 <head>
-  <title>Video call/chat</title>
+  <title>React Video call/chat</title>
 </head>
-
-<body ng-app="videoCall">
-  <div ng-controller="videoCtrl as $ctrl"> 
-    <login-buttons></login-buttons>
-<!--     <div class="videogular-container">
-    <videogular vg-theme="$ctrl.config.theme">
-      <vg-media vg-src="$ctrl.config.sources"
-          vg-tracks="$ctrl.config.tracks">
-      </vg-media>
-      <vg-controls>
-        <vg-play-pause-button></vg-play-pause-button>
-        <vg-time-display>Call duration: {{ currentTime | date:'mm:ss' }}</vg-time-display>
-        <vg-volume>
-          <vg-mute-button></vg-mute-button>
-          <vg-volume-bar></vg-volume-bar>
-        </vg-volume>
-        <vg-fullscreen-button></vg-fullscreen-button>
-      </vg-controls>
  
-      <vg-poster vg-url='$ctrl.config.plugins.poster'></vg-poster>
-    </videogular>
-    </div>
- -->
-    <div ng-if="isLoggedIn"> 
-      <h2>Video Chat, my peer id is {{currentUser.profile.peerId}}</h2>
-<!--       <span ng-show="error">
- -->        <div style="color: red">{{error}}</div>
-        <button ng-click="openPeerJS()">Re-open PeerJS</button> {{peer.id}}
-      <!-- </span> -->
-      <div id="video-container">
-        <!-- note the 'autoplay' -->
-        <video id="theirVideo" class="theirVideo video-js vjs-default-skin" controls autoplay vjs-big-play-centered poster="/images/amba.jpg"></video>
-
-        <video id="myVideo" muted="true" class="myVideo" 
-          poster="/images/mugshot.jpg" autoplay ></video>
-      </div>
-
-    <!-- Display a list of users that we can call   -->
-      <div>
-        <br> 
-        <p ng-repeat="u in users"><a href="#" ng-click="makeCall
-        (u.profile.peerId,u.emails[0].address)">
-          Call {{u.emails[0].address}}</a> ({{u.profile.peerId}})
-        </p> 
-        
-        <p><a href="#" ng-click="endCall()">End Call</a></p>
-      </div>
-    </div>
-
-    <div ng-if="!isLoggedIn"> 
-    <P>Please sign in to make a video call</P>
-    </div>
-  </div>
+<body>
+  <div id="container"></div>
 </body>
+
