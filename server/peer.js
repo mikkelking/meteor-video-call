@@ -7,9 +7,16 @@ import { Meteor } from 'meteor/meteor'
 import express from 'express'
 const debug = require('debug')('video:peerjs')
 
+// TODO: Put these into the database, add indexes on id and ipaddress, 
+// and then use find() to work out limits
+
 let clients = {}
 let ips = {}
+
+// Outstanding offers
+// TODO: put these in the database, add a cron job to clean them up on a regular basis
 let outstanding = {}
+
 let options = {
   key: 'peerjs',
   ip_limit: 10,
