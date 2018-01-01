@@ -841,6 +841,7 @@ Peer.prototype._retrieveId = function(cb) {
   url += queryString;
 
   // If there's no ID we need to wait for one before trying to init socket.
+  // TODO - let the user know of the problem
   http.open('get', url, true);
   http.onerror = function(e) {
     util.error('Error retrieving ID', e);
